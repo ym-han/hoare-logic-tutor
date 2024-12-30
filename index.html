@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="./favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!---------------------------------------------------------
+            Service worker setup
+  -----------------------------------------------------------
+  For more info, see
+  * https://github.com/gzuidhof/coi-serviceworker
+  * https://dev.to/stefnotch/enabling-coop-coep-without-touching-the-server-2d3n
+  -------------------------------------------------->
+  <script src="./coi-serviceworker.js"></script>
+  <!---------------------------------------------------------
+              z3 setup
+   -----------------------------------------------------------
+   The z3 stuff NEEDS TO BE in app.html, and not in <svelte:head> of a specific +page.svelte.
+    Note also: It's important that it gets loaded before all other non-coi-serviceworker scripts
+	    See https://github.com/Z3Prover/z3/issues/6768 -->
+  <script src="./z3-built.js"></script>
+  <script>
+    if (!crossOriginIsolated) {
+      console.log("Not Cross-Origin Isolated");
+    }
+    globalThis.global = { initZ3: globalThis.initZ3 };
+  </script>
+  
+		<link href="./_app/immutable/assets/0.VvQDWB94.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/2.DMJ_q6dc.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.2m6EiCvs.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.jMN4JcPU.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.CmAXLf4J.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.Grmgv9YZ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/utils.DArH7rcX.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.MTnJBiGh.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/store.DtJVh70z.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.CUxUGJUS.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.CcuVtuBf.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.f9bkpbiF.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/legacy.BtiaXbu3.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/slot.Dk6yR1cO.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.DDQ88L_w.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.Cdq2pv_W.js"><!--[--><!--]--><title>(Prototype for Alpha Testing) Hoare Logic Tutor</title>
+  <!------------------------------------------
+              Superseded
+  --------------------------------------------
+  This was used back when we had the mdsvex.
+  But keeping it around in comments for now,
+  since we want to extend the site with exposition down the road.
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
+    integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous" /> -->
+</head>
+
+<body data-sveltekit-preload-data="hover">
+  <div><!--[--><!--[--><!----><!----><!----><div class="exercise-page max-width-wrapper"><section><h1>Introduction</h1> <p>This is a prototype for alpha testing.</p> <p>The focus is currently on interactive versions of the exercises from the Hoare Logic unit --- that is why the
+			following assumes that you either are familiar with the rough ideas from the unit handout / course materials or
+			can easily refer back to the materials if needed. But we do plan to add more exposition and make this more
+			self-contained down the road.</p></section> <section><h1>Exercise 2 from the unit</h1> <p>(We're skipping Exercise 1.)</p> <p>Assume all variables are integers.</p> <p>Fill in the assertions.</p> <aside class="text-sm"><i>Once you've filled in all the assertions, click the button to submit the exercise.</i></aside> <div class="exercise"><!----><p>Loading...</p><!----></div></section> <section><h1>Exercise 3</h1> <p>We haven't given you any rules other than the ones for straight-line code. But we can still write some interesting
+			programs if we use integer division, which we introduce in this exercise.</p> <p>Assume all variables are integers, and all division is integer division (rounds toward 0).</p> <p>Fill in the assertions.</p> <div class="text-sm"><p><i>Hint: Turn your intuition off and follow the rules mechanically.</i></p> <aside>Notation: <code>&amp;&amp;</code> is the logical 'and'. <code>=></code> is logical implication.</aside></div> <div class="exercise"><!----><p>Loading...</p><!----></div></section> <section><h1>Exercise 4: 'Logical' vs. syntactic conditionals</h1> <p>As before, assume all variables are integers, and all division is integer division (rounds toward 0). Also, assume
+			x/0 == 0 for all x.</p> <ol><li>Fill in the assertions.</li> <li>In what sense does the code contain a conditional?</li></ol> <p><i>Hints</i></p> <div class="text-sm"><ul><li>It will help if you start at the end and work backwards.</li> <li>Think carefully about the expression ( 2 − ( a + 1 ) / a ) / 2 and what it does. Try it on different values,
+					and remember that division rounds towards 0, and x/0 == 0.</li></ul></div> <div class="exercise"><!----><p>Loading...</p><!----></div></section> <section><h1>Variant of Exercise 5: Reordering the statements to simplify the code</h1> <p>In this variant of Exercise 5, the code has already been re-ordered. Please fill in the assertions.</p> <aside class="text-sm">(If you haven't already thought about how to re-order the code, you might want to do that first.)</aside> <div class="exercise"><!----><p>Loading...</p><!----></div> <p>How does this compare with the code from the previous exercise? (Ignore the <code>b > 0</code> difference.)</p></section></div><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_cd2ka = {
+						base: new URL(".", location).pathname.slice(0, -1),
+						assets: "/hoare-logic-tutor"
+					};
+
+					const element = document.currentScript.parentElement;
+
+					const data = [null,null];
+
+					Promise.all([
+						import("./_app/immutable/entry/start.2m6EiCvs.js"),
+						import("./_app/immutable/entry/app.MTnJBiGh.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 2],
+							data,
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+</body>
+
+</html>

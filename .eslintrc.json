@@ -1,0 +1,39 @@
+{
+	"root": true,
+	"env": {
+		"browser": true
+	},
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:prettier/recommended",
+		"plugin:svelte/prettier",
+		"plugin:svelte/recommended"
+	],
+	"overrides": [
+		{
+			"files": ["*.svelte"],
+			"parser": "svelte-eslint-parser"
+		}
+	],
+	"rules": {
+		"non-state-reference": "off",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": [
+			1,
+			{
+				"args": "all",
+				"argsIgnorePattern": "^_",
+				"caughtErrors": "all",
+				"caughtErrorsIgnorePattern": "^_",
+				"destructuredArrayIgnorePattern": "^_",
+				"varsIgnorePattern": "^_",
+				"ignoreRestSiblings": true
+			}
+		]
+	}
+}

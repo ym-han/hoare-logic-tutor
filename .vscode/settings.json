@@ -1,0 +1,36 @@
+{
+	"[typescript]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+	},
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	},
+	"editor.formatOnSave": true,
+  "editor.codeActionsOnSave": { "source.fixAll": "explicit" },
+	"eslint.format.enable": true,
+	"editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+	"editor.inlineSuggest.enabled": true,
+	"editor.tabSize": 2,
+	"editor.wordWrap": "bounded",
+	"editor.detectIndentation": true,
+	"svelte.plugin.typescript.enable": true,
+	"svelte.plugin.css.diagnostics.enable": true,
+	"emmet.includeLanguages": {
+		"svelte": "html"
+	}
+}
