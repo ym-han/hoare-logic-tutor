@@ -1,0 +1,188 @@
+// I'll replace the Lezer parser with something like a Langium parser in the future. See comments / note in `lezerConcreteSyntaxToAst.ts`.
+
+// https://nikku.github.io/feel-playground/
+// https://lezer-playground.vercel.app/
+
+// Keeping it simple for now --- we can generalize this to a Program := TopDecl* in the future.
+@top TopDecl {
+    Assertion
+  | Command
+}
+
+Assertion {
+  "{" commaSep1<formula> "}"
+}
+
+// SingleFormula {
+//  formula
+// }
+
+
+@precedence {
+  member,
+  unary,
+  pred,
+  not     @right,
+  times   @left,
+  add     @left,
+  compare @left,
+  // Need to specify associativity for `and` to avoid shift-reduce conflict
+  // Apparently left-associativity might be more intuitive for programmers
+  and     @left,
+  or      @left,
+  implies @right
+}
+
+commaSep<content> {
+  (content ("," content)*)?
+}
+
+//  the comma-separated expression must occur at least once
+commaSep1<content> {
+  content ("," content)*
+}
+
+// ==========================
+//      Command
+// ==========================
+
+Command {
+  Assign | CmdSkip
+}
+
+CmdSkip {
+  @specialize<Name, "skip"> ";"
+}
+
+Assign {
+  Name AssignOp arithE ";"
+}
+
+
+// I'm tempted to simplify the grammar and not have two kinds of exprs (bool exprs vs arith exprs),
+// but doing it this way makes it easy to, e.g., catch type mismatches without having to write a type checker.
+
+// ==========================
+//      Formula
+// ==========================
+
+// TODO: Add quantifiers later
+// From Lezer docs: "The [@isGroup=<insert groupname>] pseudo-prop declares that every rule that is referenced as one of the choices of this rule should be tagged with a group prop that marks it as a <insert groupname>"
+formula[@isGroup=Formula] {
+    LitBool
+  | PredicateApp
+  | AndE
+  | OrE
+  | CompE
+  | NegE
+  | ImpliesE
+  | ParenthesizedFormula
+}
+
+PredicateApp {
+  Name !pred ArgList
+}
+
+// Simplification: Allow only `arithE`, as opposed to `( arithE | formula )`, as arguments for now
+ArgList { "(" commaSep<"..."? arithE > ")" }
+
+ParenthesizedFormula { "(" formula ")" }
+ParenthesizedArithExp { "(" arithE ")" }
+
+NegE {
+  !not NotOp<"!" | "¬" | "~"> formula
+}
+
+OrE {
+  formula !or OrOp formula
+}
+
+AndE[@dynamicPrecedence=-1] {
+  formula !and AndOp formula
+}
+
+ImpliesE {
+  formula !implies ImpliesOp formula
+}
+
+CompE {
+  arithE !compare CompareOp< "=" | "!="> arithE
+| arithE !compare CompareOp<">" | ">=" | "<" | "<="> arithE
+}
+
+// ==========================
+//      Arith Exprs
+// ==========================
+
+BinArithE {
+    arithE !times (ArithOp<"/"> | ArithOp<"%"> | ArithOp<"*">) arithE
+  | arithE !add ArithOp<"+" | "-"> arithE
+}
+
+arithE {
+    Name
+  | LitNumber
+  | BinArithE
+  | ParenthesizedArithExp
+}
+
+LitNumber {
+  (!unary ArithOp<"-">)? number
+}
+
+LitBool {
+  @specialize<Name, "true" | "false">
+}
+
+
+@tokens {
+  digit {
+    $[0-9]
+  }
+
+  digits {
+    digit+
+  }
+
+  number { digits }
+
+  ">" "<" ">=" "<="
+
+  // Wraps the token expression in a named token, which makes it easier to assign a highlighting style
+  CompareOp<Expr> {
+    Expr
+  }
+
+  AssignOp { ":=" }
+
+  ArithOp<Expr> {
+    Expr
+  }
+
+  AndOp {
+    "&&"
+  }
+
+  OrOp {
+    "||"
+  }
+
+  ImpliesOp {
+    "=>"
+  }
+
+  NotOp<expr> {
+    expr
+  }
+
+  Name { $[a-zA-Z_]+ }
+  space { $[ \t\n\r]+ }
+  LineComment { "#" ![\n]* }
+  "(" ")"
+
+
+}
+
+@skip { space | LineComment}
+
+@detectDelim
