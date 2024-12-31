@@ -131,7 +131,7 @@
 			parseToCommand('x := x * 2'),
 			makeAssnHole(),
 			parseToCommand('d := (2 - (a + 1) / a) / 2'),
-			parseToAssertion('{ x = 4*b &&\n ( a <= 0 => d = 1 ) &&\n ( a > 0 => d = 0 ) }'),
+			// parseToAssertion('{ x = 4*b &&\n ( a <= 0 => d = 1 ) &&\n ( a > 0 => d = 0 ) }'),
 			makeAssnHole(),
 			parseToCommand('m := d * 2 + (1 - d) * 3'),
 			makeAssnHole(),
