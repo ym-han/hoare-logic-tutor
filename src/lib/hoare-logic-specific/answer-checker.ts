@@ -1,14 +1,15 @@
 import { FeedbackAlrNode, EmptyFeedbackAlrNode, IncorrectAttemptFeedbackAlrNode, CorrectAttemptFeedbackAlrNode, isIncorrectAttemptFeedbackAlrNode, NodeInfoManager } from '$lib/alr-core/index.ts';
-import type { AlrContext, ExerciseAlrNode, DefaultAlrNodeInfo, AlrId, HasFeedback } from '$lib/alr-core/index.ts';
+import type { AlrContext, ExerciseAlrNode, DefaultAlrNodeInfo, HasFeedback } from '$lib/alr-core/index.ts';
 import { Feedback } from '$lib/hoare-logic-specific/data/index.ts';
 import { HoareTriple, type Command, type Formula, type Z3Env } from '$lib/lang-support/index.ts';
-import { z3ProveConjecture, parseToAssertion, RefineLezerParseError, Assign, Skip,
+import { z3ProveConjecture, parseToAssertion, RefineLezerParseError, Assign, Skip
   // Sequence
 } from '$lib/lang-support/index.ts';
 import {HLProofExerciseAlrNode, HoareTripleAlrNode, CommandAlrNode, isCommandAlrNode, isCoreProofStepAlrNode, type CoreProofStepAlrNode, type HasAssertion, hasAssertion  } from '$lib/hoare-logic-specific/alr/index.ts';
 import * as Z3 from 'z3-solver';
 import { match, P } from 'ts-pattern';
 import { codeBlock } from 'common-tags';
+import _ from 'lodash';
 
 /*************************
       Prevalidator
@@ -180,7 +181,7 @@ function makeWrongAttemptFeedbackMessage(triple: HoareTriple, preState: ProgramS
     The precondition does not guarantee that the postcondition will hold after the command(s).
 
     Suppose we start with the variables being set thus.
-        ${stringifyProgramState(preState)}
+        ${explainProgramState(preState)}
     Then the precondition
         ${triple.getPre().getOriginalInput()}
     is satisfied.
@@ -196,7 +197,7 @@ function makeWrongAttemptFeedbackMessage(triple: HoareTriple, preState: ProgramS
         But after running
             ${triple.getCommand().getOriginalInput()}
         the state of the program will be
-            ${stringifyProgramState(postState)}
+            ${explainProgramState(postState)}
         and the postcondition
             ${triple.getPost().getOriginalInput()}
         will not be satisfied.
@@ -205,22 +206,52 @@ function makeWrongAttemptFeedbackMessage(triple: HoareTriple, preState: ProgramS
   return `${preMessage}\n\n${postMessage}`;
 }
 
-function stringifyProgramState(state: ProgramState) {
+function explainProgramState(state: ProgramState) {
+  /** TODO: Improve this if they expose a better stable public API */
+  function explainVarValue(varName: string, value: Z3.Arith<"main">) {
+    return (varName == `${value}`) ? "any integer" : `${value}`;
+  }
   return Object.entries(state)
               .sort(([a], [b]) => a.localeCompare(b))
-              .map(([key, value]) => `    ${key}: ${value}`)
+              .map(([varName, value]) => `    ${varName}: ${explainVarValue(varName, value)}`)
               .join('\n');
 }
 
 function computePreAndPostStatesAccordingToCountermodel(triple: HoareTriple, env: Z3Env, model: Z3.Model<"main">) {
-  const preVars = triple.getPre().getFormula().getFreeProgramVars();
+  /** To see why the 'pre-state' should include free program vars from the post condition
+   * (but without the assign var),
+   * consider this student attempt:
+   *
+   * { z = 0 }
+   *
+   *  a := z * 5 + (1 - z) * 12;
+   *
+   * { (odd(x) => a = 5) && (even(x) => a = 12) }
+   *
+   */
+  const preAndPostCondVars = _.uniqBy(
+                                [...triple.getPre().getFormula().getFreeProgramVars(),
+                                  ...triple.getPost().getFormula().getFreeProgramVars()
+                                ],
+                                (v) => v.toString());
+
+  const preStateVars = triple.getCommand() instanceof Assign
+                     ?
+                     preAndPostCondVars.filter(
+                        v => !v.isEqualTo(
+                                (triple.getCommand() as Assign).getVar()
+                              ))
+                     :
+                     preAndPostCondVars;
   const preState = Object.fromEntries(
-    preVars.map(v => [v.toString(), model.eval(v.toZ3(env))])
+    Array.from(preStateVars).map(v => [v.toString(),
+                                      model.eval(v.toZ3(env))])
   );
 
   const postState = match(triple.getCommand())
     .with(P.instanceOf(Assign), () => {
-        const [assignVarName, assignRhs] = [(triple.getCommand() as Assign).getVar().toString(), (triple.getCommand() as Assign).getRhs()];
+        const [assignVarName, assignRhs] = [(triple.getCommand() as Assign).getVar().toString(),
+                                            (triple.getCommand() as Assign).getRhs()];
 
         return {  ...preState,
                   [assignVarName]: model.eval(assignRhs.toZ3(env))

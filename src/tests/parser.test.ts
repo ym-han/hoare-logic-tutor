@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, test, expect } from 'vitest';
 import { parseToAssertion, parseToCommand, RefineLezerParseError } from '../lib/lang-support/index.ts';
 import {
   type Name, Var, NumLit, BoolLit, Not, And, Or,
@@ -123,6 +123,22 @@ describe('Predicates', () => {
     expect(formula.getArgs()).toHaveLength(3);
   });
 });
+
+/**************************************
+    Built in / interpreted predicates
+***************************************/
+
+describe('Interpreted predicates', () => {
+  test('calling getFreeProgramVars on `odd(x)` gives you x', () => {
+    const programVars = parseToAssertion("{ odd(x) }")
+                          .getFormula()
+                          .getFreeProgramVars()
+                          .map(v => v.toString());
+    expect(programVars[0]).toStrictEqual("x");
+    expect(programVars.length).toStrictEqual(1);
+  })
+})
+
 
 /*******************
   Expected errors
