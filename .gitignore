@@ -1,0 +1,30 @@
+# Stuff that shouldn't be on the `public` branch / repo
+/notes
+
+# Macos
+.DS_Store
+
+# Personal
+*.old
+*.notes
+*SUPERSEDED
+
+# Build related things
+static/z3-built.wasm
+static/z3-built.js
+## TODO: May want to exclude more the static z3 stuff, since already have a post-install script
+node_modules/
+*.tsbuildinfo
+/build
+/dist
+/.svelte-kit
+/package
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+.tool-versions
+
+# Misc
+.aider*
+.env
+.env.*
+!.env.example

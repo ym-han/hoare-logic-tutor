@@ -1,0 +1,260 @@
+/*
+TODO: Refactor in light of moving away from old QnField stuff etc
+*/
+
+@tailwind base;
+
+/* ===== shadcn svelte ========================= */
+/* TODO: Adjust the values of the css vars; most of the values below are shadcn svelte defaults */
+@layer base {
+	:root {
+		--code-font-family: sfmono-regular, consolas, menlo, 'dejavu sans mono', monospace;
+
+		--background: 0 0% 100%;
+		--foreground: 222.2 84% 4.9%;
+
+		--muted: 210 40% 96.1%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+
+		--border: 269 97% 85%; /* purple 300 */
+		--input: 214.3 31.8% 91.4%;
+
+		--primary: 222.2 47.4% 11.2%;
+		--primary-foreground: 210 40% 98%;
+
+		--secondary: 210 40% 96.1%;
+		--secondary-foreground: 222.2 47.4% 11.2%;
+
+		--accent: 210 40% 96.1%;
+		--accent-foreground: 222.2 47.4% 11.2%;
+
+		--destructive: 0 72.2% 50.6%;
+		--destructive-foreground: 210 40% 98%;
+
+		--ring: 222.2 84% 4.9%;
+
+		--radius: 0.5rem;
+	}
+
+	@font-face {
+		font-family: 'Fira Sans';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url(https://fonts.gstatic.com/s/firasans/v17/va9E4kDNxMZdWfMOD5Vvl4jL.woff2) format('woff2');
+		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+			U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	}
+
+	@font-face {
+		font-family: 'Fira Sans';
+		font-style: normal;
+		font-weight: 600;
+		font-display: swap;
+		src: url(https://fonts.gstatic.com/s/firasans/v17/va9B4kDNxMZdWfMOD5VnSKzeRhf6.woff2) format('woff2');
+		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+			U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+		font-family:
+			'Fira Sans',
+			system-ui,
+			-apple-system,
+			Segoe UI,
+			Roboto,
+			Ubuntu,
+			Cantarell,
+			Noto Sans,
+			sans-serif;
+	}
+
+	code {
+		font-family: var(--code-font-family);
+		line-height: 1.1rem;
+		white-space: pre;
+	}
+}
+
+/* ===== CSS reset things ======================= */
+
+@layer base {
+	/* don't let replaced elts grow beyond their containers */
+	img,
+	picture,
+	video,
+	canvas,
+	svg {
+		@apply max-w-full;
+	}
+
+	/* may want to explicitly make a root elt with id */
+	#html {
+		/* create a new stacking context without needing to set a z-index,
+    so that high-priority elements (modals, dropdowns, tooltips)
+    will always show up above the other elements.
+    See https://www.joshwcomeau.com/css/stacking-contexts/ for more info */
+		@apply isolate;
+
+		/* prevent font size inflation
+      https://kilianvalkhof.com/2022/css-html/your-css-reset-needs-text-size-adjust-probably/
+      normalize.css (which TW uses) has -webkit-text-size-adjust but not the following */
+		-moz-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+	}
+}
+
+/* ===== Hole styling ======================= */
+@tailwind components;
+
+/* moving these styles here because not supposed to use @layer in component styles
+https://tailwindcss.com/docs/adding-custom-styles#using-multiple-css-files
+
+Note re overriding CM styles:
+  "rules that directly match the editor's wrapper element
+  need to be explicitly differentiated by
+  adding an `&` to the selector for that element"
+
+*/
+@layer components {
+	.exercise-page p:not(.exercise p) {
+		@apply mb-2 text-base leading-relaxed;
+	}
+
+	.exercise-page {
+		h1 {
+			@apply mb-3 mt-8 text-4xl font-semibold text-foreground;
+		}
+
+		a {
+			@apply text-blue-600 underline underline-offset-2
+             hover:text-blue-800
+             focus:ring-2 focus:ring-blue-200;
+		}
+
+		ol {
+			@apply mb-4 list-decimal space-y-2 pl-8;
+		}
+
+		ol li {
+			@apply pl-2;
+		}
+
+		ul {
+			@apply mb-4 list-disc space-y-2 pl-8;
+		}
+
+		ul li {
+			@apply pl-2;
+		}
+	}
+
+	/* This is specifically for HL Proof Exercises */
+	.exercise {
+		@apply /* */ my-8 max-w-[92%] rounded-lg border-2
+    pb-10 pl-8 pr-2 pt-8
+    leading-normal
+    shadow-sm;
+	}
+
+	.max-width-wrapper {
+		@apply mx-auto max-w-prose px-4 py-4;
+		/* max-width:     800px;
+    margin-left:   auto;
+    margin-right:  auto;
+    padding-top:   18px;
+    padding-left:  16px;
+    padding-right: 16px; */
+	}
+
+	.cmActiveLineBgTrans {
+		.cm-activeLine {
+			background-color: transparent;
+		}
+	}
+	.caretColor {
+		.cm-content {
+			@apply caret-purple-500;
+		}
+	}
+
+	/* TODO: Probably will want to
+  cut down on what's in CodeMirrorInputBaseStyles --- this was adapted from the old QF styles, and there's probably more than what we want in a 'base styles' class
+
+  Useful reference: https://github.com/sourcegraph/sourcegraph-public-snapshot/blob/c864f15af264f0f456a6d8a83290b5c940715349/client/branded/src/search-ui/input/CodeMirrorQueryInput.module.scss#L68
+  */
+	.CodeMirrorInputBaseStyles {
+		@apply cmActiveLineBgTrans;
+		@apply caretColor;
+
+		/* See https://github.com/sourcegraph/sourcegraph-public-snapshot/blob/c864f15af264f0f456a6d8a83290b5c940715349/client/branded/src/search-ui/input/CodeMirrorQueryInput.module.scss#L60 */
+		.cm-placeholder {
+			display: inline;
+			word-break: break-all;
+		}
+
+		.cm-panels-top {
+			@apply border-b-0;
+		}
+
+		.cm-tooltip-lint {
+			@apply text-xs;
+			@apply opacity-70;
+		}
+
+		.cm-lintRange-error {
+			/* TODO: don't know how to make squiggly line more prominent */
+		}
+		[contenteditable='false'] {
+			opacity: 0.5;
+		}
+
+		/* .cm-content-ptb-0\.5 */
+		.cm-content {
+			/* Padding *within* the field */
+			padding-top: 4px;
+			padding-bottom: 4px;
+		}
+
+		/* .cm-content-no-box-shadow-on-focus  */
+		.cm-content.focus-visible {
+			box-shadow: none;
+		}
+		/* .cm-editor-no-border-on-focus */
+		.cm-editor.cm-focused {
+			border-width: 0px;
+		}
+		/* .cm-editor-no-outline-on-focus */
+		.cm-editor.cm-focused {
+			outline: none;
+		}
+
+		/* TODO: Replace bg-purple-100, bg-purple-200 etc with a CSS variable when we start improving / overhauling the design token system*/
+
+		.cm-editor.cm-focused .cm-matchingBracket,
+		.cm-editor.cm-focused .cm-nonmatchingBracket {
+			@apply bg-purple-200;
+		}
+
+		.cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
+		.cm-editor .cm-selectionBackground,
+		.cm-editor ::selection {
+			@apply bg-purple-100;
+		}
+	}
+}
+
+@tailwind utilities;
