@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"EditorConfig.EditorConfig",
+		"eamodio.gitlens",
+		"christian-kohler.path-intellisense",
+		"steoates.autoimport",
+    "svelte.svelte-vscode",
+    "yoavbls.pretty-ts-errors"
+	]
+}

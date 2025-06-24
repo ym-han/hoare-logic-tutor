@@ -1,0 +1,1 @@
+export const SUBMIT_STUDENT_ATTEMPT_KEYBINDING = 'Mod-Enter';
